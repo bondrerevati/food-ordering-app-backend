@@ -1,5 +1,7 @@
 var express = require("express");
 var app = express();
+let cors = require("cors");
+app.use(cors());
 var dotenv = require("dotenv");
 dotenv.config();
 var PORT = process.env.PORT;

@@ -3,16 +3,16 @@ const router = express.Router();
 const Customers = require("../Schema/CustomerSchema");
 const jwt = require("jsonwebtoken");
 router.post("/signup", async (req, res) => {
-  const { name, email, mobileNo, password } = req.body;
+  const { name, email, mobileNumber, password } = req.body;
   console.log(req.body);
   const isExists = await Customers.findOne({ email: email });
   if (isExists) {
-    res.status(200).send({ message: "Customer already exists." });
+    res.status(200).send({ message: "Customer already exists.", token: "customerExists" });
   } else {
     const Customer = new Customers({
       name: name,
       email: email,
-      mobileNo: mobileNo,
+      mobileNo: mobileNumber,
       password: password,
     });
     const customerAdded = await Customer.save();
