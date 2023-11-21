@@ -4,7 +4,6 @@ const Customers = require("../Schema/CustomerSchema");
 const jwt = require("jsonwebtoken");
 router.post("/signup", async (req, res) => {
   const { name, email, mobileNumber, password } = req.body;
-  console.log(req.body);
   const isExists = await Customers.findOne({ email: email });
   if (isExists) {
     res.status(200).send({ message: "Customer already exists.", token: "customerExists" });

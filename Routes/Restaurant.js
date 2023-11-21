@@ -44,4 +44,24 @@ router.post("/login", async (req, res) => {
     res.status(401).send({ message: "Restaurant is not registered." });
   }
 });
+router.get("/list", async (req, res) => {
+  const restaurants = await Restaurants.find({});
+  if (restaurants) {
+      res.status(200).send(restaurants);
+  } else {
+    res.status(200).send({ message: "Restaurants not found." });
+  }
+});
+router.get("/restaurant_details", async (req, res)=>{
+  const decodeToken=jwt.verify(req.body.token, "mysecretkey");
+  console.log(decodeToken);
+  const restaurantDetails = await Restaurants.findOne({_id:decodeToken.r_id});
+  if(restaurantDetails){
+    const jwtToken=jwt.sign(restaurantDetails.toJSON(), "mysecretkey");
+    res.status(200).send({token:jwtToken});
+  }
+  else{
+    res.status(500).send({msg:"Internal Server Error"});
+  }
+});
 module.exports = router;
