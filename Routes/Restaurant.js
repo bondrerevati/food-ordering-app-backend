@@ -22,10 +22,8 @@ router.post("/signup", async (req, res) => {
       password: password,
     });
     const restaurantAdded = await Restaurant.save();
-    console.log(restaurantAdded);
     if (restaurantAdded) {
       const jwtToken = jwt.sign(restaurantAdded.toJSON(), "mysecretkey");
-      console.log(jwtToken);
       res
         .status(200)
         .send({ message: "Restaurant added successfully.", token: jwtToken });
@@ -57,10 +55,9 @@ router.get("/list", async (req, res) => {
   }
 });
 router.get("/restaurant_details", async (req, res) => {
-  const decodeToken = jwt.verify(req.body.token, "mysecretkey");
-  console.log(decodeToken);
+  const {_id} = jwt.verify(req.headers.authorization, "mysecretkey");
   const restaurantDetails = await Restaurants.findOne({
-    _id: decodeToken.r_id,
+    _id: _id,
   });
   if (restaurantDetails) {
     const jwtToken = jwt.sign(restaurantDetails.toJSON(), "mysecretkey");
@@ -71,7 +68,7 @@ router.get("/restaurant_details", async (req, res) => {
 });
 router.put("/update", async (req, res) => {
   const { name, email, address, openingTime, closingTime, password } = req.body;
-  const { _id } = jwt.verify(req.body.headers.Authorization, "mysecretkey");
+  const { _id } = jwt.verify(req.headers.authorization, "mysecretkey");
   try {
     const update = await Restaurants.findOneAndUpdate(
       { _id: _id },
@@ -85,9 +82,10 @@ router.put("/update", async (req, res) => {
       }
     );
     if (update) {
+      const jwtToken = jwt.sign(update.toJSON(), "mysecretkey");
       res
         .status(200)
-        .send({message:"Restaurant details updated successfully!"});
+        .send({message:"Restaurant details updated successfully!", token: jwtToken});
     }
   } catch (e) {
     res.status(500).send("Some error occurred.");
