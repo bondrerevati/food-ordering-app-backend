@@ -91,4 +91,12 @@ router.put("/update", async (req, res) => {
     res.status(500).send("Some error occurred.");
   }
 });
+router.get("/getrestaurants", async (req, res) => {
+  try {
+    const getRestaurants = await Restaurants.find();
+    res.status(200).json(getRestaurants);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
 module.exports = router;

@@ -162,7 +162,10 @@ router.put("/updateitem", uploadImage, async (req, res) => {
 router.delete("/deleteitem", async (req, res) => {
   const { _id, restaurant_id } = req.body;
   try {
-    const isDeleted = await Items.deleteOne({ _id: _id, restaurant_id: restaurant_id });
+    const isDeleted = await Items.deleteOne({
+      _id: _id,
+      restaurant_id: restaurant_id,
+    });
     if (isDeleted.deletedCount == 1) {
       res.status(200).send("Item deleted successfully!");
     } else if (isDeleted.deletedCount == 0) {
@@ -170,6 +173,15 @@ router.delete("/deleteitem", async (req, res) => {
     }
   } catch (e) {
     res.status(500).send("Some error occurred.");
+  }
+});
+router.post("/getitemsbyrid", async (req, res) => {
+  try {
+    const { restaurant } = req.body;
+    const getItems = await Items.find({ restaurant_id: restaurant._id });
+    res.status(200).json(getItems);
+  } catch (error) {
+    res.status(400).json(error);
   }
 });
 module.exports = router;
