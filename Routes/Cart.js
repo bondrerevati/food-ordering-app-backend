@@ -240,7 +240,6 @@ router.post("/checkout", async (req, res) => {
             order_id: newOrderAdded._id,
           });
           const orderAdded = await orderedItems.save();
-          console.log(orderAdded);
           if (orderAdded) {
             const orderSuccess = response.map(async (element) => {
               let updatedData = await OrderedItems.updateOne(
@@ -251,14 +250,14 @@ router.post("/checkout", async (req, res) => {
                   $push: {
                     items: {
                       item_id: element.item._id,
+                      item_name: element.item.name,
+                      restaurant_id: element.item.restaurant_id,
                       quantity: element.quantity,
                     },
                   },
                 }
               );
-              console.log(updatedData);
             });
-            console.log(orderSuccess);
             Promise.all(orderSuccess).then(async (response) => {
                 const cleanup = await axios.post(
                   "http://localhost:8080/cart/cleanup",
